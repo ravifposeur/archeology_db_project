@@ -132,3 +132,5 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res) => {
         res.status(500).json({message: 'Error di server'});
     }
 });
+
+module.exports = router;
