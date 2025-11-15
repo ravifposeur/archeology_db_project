@@ -149,14 +149,14 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res, next)
     }
 });
 
-router.put('/approve/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query(
             `
-            UPDATE objek_temuan
+            UPDATE situs_arkeologi
             SET status_verifikasi = 'rejected'
-            WHERE objek_id = $1 RETURNING *
+            WHERE situs_id = $1 RETURNING *
             `
             [id]
         );
