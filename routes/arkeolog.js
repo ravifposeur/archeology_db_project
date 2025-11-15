@@ -41,6 +41,18 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
         if (result.rows.length === 0) return res.status(404).json({ message: 'Arkeolog tidak ditemukan' });
         res.json({ message: 'Arkeolog berhasil diupdate', data: result.rows[0] });
     } catch (error) {
+        console.error('Error saat edit Arkeolog', error);
+        res.status(500).json({message: 'Error di Server'});
+    }
+});
+
+router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query("DELETE FROM arkeolog WHERE arkeolog_id = $1", [id]);
+        res.json({ message: 'Arkeolog berhasil dihapus' });
+    } catch (error) {
+        if (error.code === '23503') return res.status(400).json({ message: 'Gagal: Arkeolog ini masih tercatat meneliti situs.' });
         console.error(error);
         res.status(500).json({ message: 'Error server.' });
     }
