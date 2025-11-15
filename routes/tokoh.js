@@ -18,7 +18,7 @@ router.get('/', authenticateToken, async (req, res) => {
         console.error('Error ketika ambil tokoh', error);
         res.status(500).json({message: 'Error di server'});
     }
-})
+});
 
 router.post('/', authenticateToken, isVerifier, async (req, res) => {
     try {
@@ -34,4 +34,28 @@ router.post('/', authenticateToken, isVerifier, async (req, res) => {
         console.error('Error ketika post tokoh', error);
         res.status(500).json({message: 'Error di server'});
     }
-})
+});
+
+router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
+    try {
+        const {id} = req.params;
+        const { nama_tokoh, tahun_lahir, tahun_wafat, biografi_singkat, kerajaan_id } = req.body;
+
+        const result = await pool.query(
+            `UPDATE tokoh SET nama_tokoh = $1, tahun_lahir = $2,
+            tahun_wafat = $3, biografi_singkat = $4, kerajaan_id = $5
+            WHERE tokoh_id =  $6 RETURNING *
+            `
+            [ nama_tokoh, tahun_lahir, tahun_wafat, biografi_singkat, kerajaan_id, id ]
+        );
+
+        if (result.rows.length === 0){
+            return res.status(404).json({message: 'Tokoh tidak ditemukan'});
+        }
+
+        res.json({message: 'Tokoh berhasil diupdate', data: result.rows[0]});
+    } catch (error) {
+        console.error('Error ketika post tokoh', error);
+        res.status(500).json({message: 'Error di server'});
+    }
+});
