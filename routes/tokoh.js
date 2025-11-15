@@ -82,3 +82,5 @@ router.delete('/:id', authenticateToken, isAdmin, async (req,res) => {
         res.status(500).json({message: 'Error di Server'});
     }
 });
+
+module.exports = router;
