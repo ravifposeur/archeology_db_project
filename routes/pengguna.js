@@ -1,11 +1,20 @@
 const express = require('express');
-const router = express.Router(); // <--- Pakai Router, bukan app
-const pool = require('../db'); // <--- Impor koneksi DB
+const router = express.Router();
+const rateLimit = require('express-rate-limit');
+const pool = require('../db'); 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 const JWT_SECRET = 'rehankijing';
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: 'Terlalu banyak percobaan login, coba lagi setelah 15 menit',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 router.post('/register', async (req, res) => {
     try {
