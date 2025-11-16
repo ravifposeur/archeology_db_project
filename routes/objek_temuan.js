@@ -94,7 +94,7 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res) => {
             UPDATE objek_temuan
             SET status_verifikasi = 'verified'
             WHERE objek_id = $1 RETURNING *
-            `
+            `,
             [id]
         );
         
@@ -118,7 +118,7 @@ router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
             UPDATE objek_temuan
             SET status_verifikasi = 'rejected'
             WHERE objek_id = $1 RETURNING *
-            `
+            `,
             [id]
         );
         

@@ -45,7 +45,7 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
             `UPDATE tokoh SET nama_tokoh = $1, tahun_lahir = $2,
             tahun_wafat = $3, biografi_singkat = $4, kerajaan_id = $5
             WHERE tokoh_id =  $6 RETURNING *
-            `
+            `,
             [ nama_tokoh, tahun_lahir, tahun_wafat, biografi_singkat, kerajaan_id, id ]
         );
 
@@ -63,7 +63,7 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
 router.delete('/:id', authenticateToken, isAdmin, async (req,res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query("DELETE FROM tokoh WHERE tokoh_id = $1", [id]);
+        const result = await pool.query("DELETE FROM tokoh WHERE tokoh_id = $1 RETURNING *", [id]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({message: 'Tokoh tidak ditemukan'});
