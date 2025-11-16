@@ -157,7 +157,7 @@ router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
             UPDATE situs_arkeologi
             SET status_verifikasi = 'rejected'
             WHERE situs_id = $1 RETURNING *
-            `
+            `,
             [id]
         );
         

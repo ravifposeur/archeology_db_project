@@ -19,7 +19,7 @@ router.post('/', authenticateToken, isVerifier, async (req, res) => {
         const { nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon } = req.body;
         const result = await pool.query(
             `INSERT INTO arkeolog (nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon) 
-             VALUES ($1, $2, $3, $4, $5) RETURNING *`
+             VALUES ($1, $2, $3, $4, $5) RETURNING *`,
             [nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon]
         );
         res.status(201).json({message: 'Arkeolog berhasil ditambahkan', data: result.rows[0]});
