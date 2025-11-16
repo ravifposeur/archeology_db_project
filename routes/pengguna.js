@@ -19,7 +19,7 @@ const loginLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-router.post('/register', validate(registerSchema), async (req, res) => {
+router.post('/register', validate({body: registerSchema}), async (req, res) => {
     try {
         const {nama_pengguna, email, password} = req.body;
 

@@ -13,7 +13,7 @@ const {
 
 // GET VERIFIED OBJECT BERDASAR SITUS
 
-router.get('verified/by-situs/:situs_id', validate({ params: paramsSitusIdSchema }), async (req, res) => {
+router.get('/verified/by-situs/:situs_id', validate({ params: paramsSitusIdSchema }), async (req, res) => {
     try {
         const {situs_id} = req.params;
         const result = await pool.query(
