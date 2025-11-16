@@ -13,6 +13,7 @@ const ruteSitus = require('./routes/situs');
 const ruteKerajaan = require('./routes/kerajaan');
 const ruteAlamat = require('./routes/alamat');
 const ruteTokoh = require('./routes/tokoh');
+const ruteArkeolog = require('./routes/arkeolog');
 const ruteObjek = require('./routes/objek_temuan');
 const ruteRelasi = require('./routes/relasi');
 
@@ -21,6 +22,7 @@ app.use('/api/situs', ruteSitus);
 app.use('/api/kerajaan', ruteKerajaan);
 app.use('/api/alamat', ruteAlamat);
 app.use('/api/tokoh', ruteTokoh);
+app.use('/api/arkeolog', ruteArkeolog);
 app.use('/api/objek', ruteObjek);
 app.use('/api/relasi', ruteRelasi);
 
