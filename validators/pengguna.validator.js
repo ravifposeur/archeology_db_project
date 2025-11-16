@@ -24,7 +24,7 @@ const registerSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-    email: Joi.string().email().required().message({
+    email: Joi.string().email().required().messages({
         'string.email': 'Format email tidak valid',
         'any.required': 'Email wajib diisi'
     }),
