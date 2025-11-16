@@ -5,6 +5,9 @@ const pool = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
+const validate = require('../middleware/validation');
+const { registerSchema, loginSchema } = require('../validators/pengguna.validator');
 const saltRounds = 10;
 const JWT_SECRET = 'rehankijing';
 
@@ -16,15 +19,11 @@ const loginLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', validate(registerSchema), async (req, res) => {
     try {
         const {nama_pengguna, email, password} = req.body;
 
-        if(!nama_pengguna || !email || !password){
-            return res.status(400).json({message: 'Semua field wajib diisi!'});
-        }
-
-        const passwordHash = await bcrypt.hashSync(password, saltRounds);
+        const passwordHash = await bcrypt.hash(password, saltRounds);
 
         const newUser = await pool.query(
             "INSERT INTO pengguna (nama_pengguna, email, password_hash, role) VALUES ($1, $2, $3, 'kontributor') RETURNING pengguna_id, nama_pengguna, email, role",
@@ -39,7 +38,13 @@ router.post('/register', async (req, res) => {
     } catch (error) {
         console.error('Error saat regist:', error);
         if(error.code === '23505'){
-            return res.status(409).json({message: 'uname or email terdaftar'});
+            if (error.constraint === 'pengguna_email_key') {
+                return res.status(409).json({message: 'Email sudah terdaftar.'});
+            }
+            if (error.constraint === 'pengguna_nama_pengguna_key') {
+                return res.status(409).json({message: 'Nama pengguna sudah terdaftar.'});
+            }
+            return res.status(409).json({message: 'Email atau Nama Pengguna sudah terdaftar.'});
         }
         res.status(500).json({message: 'Error di server!'});
     }
