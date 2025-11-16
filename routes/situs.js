@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 const { authenticateToken, isVerifier, isAdmin } = require('../middleware/auth');
-
+const validate = require('../middleware/validation'); 
+const { 
+    createSitusSchema, 
+    // updateSitusSchema,
+    paramsIdSchema       
+} = require('../validators/situs.validator');
 router.get('/verified', async (req,res) =>{
     try {
 
@@ -41,7 +46,7 @@ router.get('/verified', async (req,res) =>{
     }
 });
 
-router.post('/', authenticateToken, async (req, res) =>{
+router.post('/', authenticateToken, validate({body: createSitusSchema}), async (req, res) => {
     try {
         const {
             nama_situs, jalan_dusun, desa_kelurahan_id,
@@ -50,10 +55,6 @@ router.post('/', authenticateToken, async (req, res) =>{
         } = req.body;
 
         const penggunaPelaporID = req.user.id;
-
-        if (!nama_situs || !jalan_dusun || !latitude || !longitude || !desa_kelurahan_id) {
-            return res.status(400).json({ message: 'Nama, Jalan, Desa, Latitude, dan Longitude wajib diisi.' });
-        }
 
         const insertQuery = `
             INSERT INTO situs_arkeologi 
@@ -125,7 +126,7 @@ router.get('/pending', authenticateToken, isVerifier, async (req, res, next) => 
     }
 });
 
-router.put('/approve/:id', authenticateToken, isVerifier, async (req, res, next) => {
+router.put('/approve/:id', authenticateToken, isVerifier, validate({params: paramsIdSchema}), async (req, res, next) => {
     try {
         
         const {id} = req.params;
@@ -149,7 +150,7 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res, next)
     }
 });
 
-router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/reject/:id', authenticateToken, isVerifier, validate({params: paramsIdSchema}), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query(
@@ -172,7 +173,7 @@ router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, isAdmin, validate({params: paramsIdSchema}), async (req, res) => {
     try {
         const {id} = req.params;
         const result = await pool.query(

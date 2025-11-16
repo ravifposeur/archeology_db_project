@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../db');
 const { authenticateToken, isVerifier, isAdmin } = require('../middleware/auth');
 
-router.get('/penelitian/by-situs/:id', authenticateToken, async (req, res) => {
+router.get('/penelitian/by-situs/:id', authenticateToken, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const PenelitianSitusquery = `
@@ -20,7 +20,7 @@ router.get('/penelitian/by-situs/:id', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/penelitian', authenticateToken, isVerifier, async (req, res) => {
+router.post('/penelitian', authenticateToken, isVerifier, validate({ body: penelitianSchema }), async (req, res) => {
     try {
         const { arkeolog_id, situs_id } = req.body;
         const result = await pool.query(
@@ -37,7 +37,7 @@ router.post('/penelitian', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/penelitian', authenticateToken, isVerifier, async (req, res) => {
+router.delete('/penelitian', authenticateToken, isVerifier, validate({ body: penelitianSchema }), async (req, res) => {
     try {
         const { arkeolog_id, situs_id } = req.body;
         const result = await pool.query(
@@ -51,7 +51,7 @@ router.delete('/penelitian', authenticateToken, isVerifier, async (req, res) => 
     }
 });
 
-router.get('/atribusi/by-objek/:id', authenticateToken, async (req, res) => {
+router.get('/atribusi/by-objek/:id', authenticateToken, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const getAtribusiQuery = `
@@ -68,7 +68,7 @@ router.get('/atribusi/by-objek/:id', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/atribusi', authenticateToken, isVerifier, async (req, res) => {
+router.post('/atribusi', authenticateToken, isVerifier, validate({ body: atribusiSchema }), async (req, res) => {
     try {
         const { objek_id, tokoh_id } = req.body;
         const result = await pool.query(
@@ -85,7 +85,7 @@ router.post('/atribusi', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/atribusi', authenticateToken, isVerifier, async (req, res) => {
+router.delete('/atribusi', authenticateToken, isVerifier, validate({ body: atribusiSchema }), async (req, res) => {
     try {
         const { objek_id, tokoh_id } = req.body;
         const result = await pool.query(
@@ -99,7 +99,7 @@ router.delete('/atribusi', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.get('/gelar/by-tokoh/:id', authenticateToken, async (req, res) => {
+router.get('/gelar/by-tokoh/:id', authenticateToken, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query(
@@ -113,7 +113,7 @@ router.get('/gelar/by-tokoh/:id', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/gelar', authenticateToken, isVerifier, async (req, res) => {
+router.post('/gelar', authenticateToken, isVerifier, validate({ body: gelarSchema }), async (req, res) => {
     try {
         const { tokoh_id, gelar_tokoh } = req.body;
         const result = await pool.query(
@@ -128,7 +128,7 @@ router.post('/gelar', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/gelar', authenticateToken, isVerifier, async (req, res) => {
+router.delete('/gelar', authenticateToken, isVerifier, validate({ body: gelarSchema }), async (req, res) => {
     try {
         const { tokoh_id, gelar_tokoh } = req.body; // Hapus berdasarkan body
         const result = await pool.query(

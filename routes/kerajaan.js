@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-
 const { authenticateToken, isVerifier, isAdmin } = require('../middleware/auth');
 
+const validate = require('../middleware/validation');
+const { kerajaanSchema, paramsIdSchema } = require('../validators/kerajaan.validator');
 router.get('/', authenticateToken, async (req, res) => {
     try {
 
@@ -19,7 +20,21 @@ router.get('/', authenticateToken, async (req, res) => {
 
 });
 
-router.post('/', authenticateToken, isVerifier, async (req, res) => {
+router.get('/:id', authenticateToken, validate({ params: paramsIdSchema }), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query("SELECT * FROM kerajaan WHERE kerajaan_id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Kerajaan tidak ditemukan' });
+        }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error ambil kerajaan by id:', error);
+        res.status(500).json({ message: 'Error server.' });
+    }
+});
+
+router.post('/', authenticateToken, isVerifier, validate({ body: kerajaanSchema }), async (req, res) => {
     try {
         const { nama_kerajaan, tahun_berdiri, tahun_runtuh, pusat_pemerintahan, deskripsi_singkat } = req.body;
         
@@ -42,7 +57,7 @@ router.post('/', authenticateToken, isVerifier, async (req, res) => {
 
 });
 
-router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/:id', authenticateToken, isVerifier, validate({ params: paramsIdSchema, body: kerajaanSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const { nama_kerajaan, tahun_berdiri, tahun_runtuh, pusat_pemerintahan, deskripsi_singkat } = req.body;
@@ -67,7 +82,7 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, isAdmin, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const {id} = req.params;
 

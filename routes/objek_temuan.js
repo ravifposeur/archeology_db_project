@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
-
 const { authenticateToken, isVerifier, isAdmin } = require('../middleware/auth');
+
+const validate = require('../middleware/validation');
+const {
+    createObjekSchema,
+    updateObjekSchema,
+    paramsIdSchema,
+    paramsSitusIdSchema
+} = require('../validators/objek_temuan.validator');
 
 // GET VERIFIED OBJECT BERDASAR SITUS
 
-router.get('verified/by-situs/:situs_id', async (req, res) => {
+router.get('verified/by-situs/:situs_id', validate({ params: paramsSitusIdSchema }), async (req, res) => {
     try {
         const {situs_id} = req.params;
         const result = await pool.query(
@@ -22,7 +29,7 @@ router.get('verified/by-situs/:situs_id', async (req, res) => {
 
 // POST OBJECT TO PENDING
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, validate({ body: createObjekSchema }), async (req, res) => {
     try {
 
         const {
@@ -31,10 +38,6 @@ router.post('/', authenticateToken, async (req, res) => {
         } = req.body;
 
         const penggunaPelaporID = req.user.id;
-
-        if (!nama_objek || !jenis_objek || !bahan || !situs_id) {
-            return res.status(400).json({ message: 'Nama, Jenis, Bahan, dan Situs ID wajib diisi.' });
-        }
 
         const insertQuery = `
             INSERT INTO objek_temuan (
@@ -86,7 +89,7 @@ router.get('/pending', authenticateToken, isVerifier, async (req, res) => {
 
 // APPROVED OBJECT
 
-router.put('/approve/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/approve/:id', authenticateToken, isVerifier, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query(
@@ -110,7 +113,7 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res) => {
 });
 
 // REJECT OBJECT
-router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/reject/:id', authenticateToken, isVerifier, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query(
@@ -133,7 +136,7 @@ router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, isAdmin, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const {id} = req.params;
         const result = await pool.query(
