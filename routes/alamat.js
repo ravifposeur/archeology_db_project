@@ -4,6 +4,16 @@ const pool = require('../db');
 
 const { authenticateToken, isVerifier, isAdmin } = require('../middleware/auth');
 
+const validate = require('../middleware/validation');
+const {
+    paramsIdSchema,
+    kotaSchema,
+    kecamatanSchema,
+    paramsKotaIdSchema,
+    desaSchema,
+    paramsKecamatanIdSchema
+} = require('../validators/alamat.validator');
+
 router.get('/kota', authenticateToken, async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM kota_kabupaten ORDER BY nama_kota_kabupaten ASC");
@@ -14,7 +24,7 @@ router.get('/kota', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/kota', authenticateToken, isVerifier, async (req, res) => {
+router.post('/kota', authenticateToken, isVerifier, validate({ body: kotaSchema }), async (req, res) => {
     const { nama_kota_kabupaten } = req.body;
     try {
         const result = await pool.query(
@@ -28,7 +38,7 @@ router.post('/kota', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.put('/kota/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/kota/:id', authenticateToken, isVerifier, validate({ params: paramsIdSchema, body: kotaSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const { nama_kota_kabupaten } = req.body;
@@ -48,7 +58,7 @@ router.put('/kota/:id', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/kota/:id', authenticateToken, isAdmin, async (req, res) => {
+router.delete('/kota/:id', authenticateToken, isAdmin, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query("DELETE FROM kota_kabupaten WHERE kota_kabupaten_id = $1", [id]);
@@ -67,7 +77,7 @@ router.delete('/kota/:id', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-router.get('/kecamatan/by-kota/:kota_id', authenticateToken, async (req, res) => {
+router.get('/kecamatan/by-kota/:kota_id', authenticateToken, validate({ params: paramsKotaIdSchema }), async (req, res) => {
     try {
         const { kota_id } = req.params;
         const result = await pool.query(
@@ -81,7 +91,7 @@ router.get('/kecamatan/by-kota/:kota_id', authenticateToken, async (req, res) =>
     }
 });
 
-router.post('/kecamatan', authenticateToken, isVerifier, async (req, res) => {
+router.post('/kecamatan', authenticateToken, isVerifier, validate({ body: kecamatanSchema }), async (req, res) => {
     const { nama_kecamatan, kota_kabupaten_id } = req.body;
     try {
         const result = await pool.query(
@@ -95,7 +105,7 @@ router.post('/kecamatan', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.put('/kecamatan/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/kecamatan/:id', authenticateToken, isVerifier, validate({ params: paramsIdSchema, body: kecamatanSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const { nama_kecamatan, kota_kabupaten_id } = req.body;
@@ -115,7 +125,7 @@ router.put('/kecamatan/:id', authenticateToken, isVerifier, async (req, res) => 
     }
 });
 
-router.delete('/kecamatan/:id', authenticateToken, isAdmin, async (req, res) => {
+router.delete('/kecamatan/:id', authenticateToken, isAdmin, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query("DELETE FROM kecamatan WHERE kecamatan_id = $1", [id]);
@@ -134,7 +144,7 @@ router.delete('/kecamatan/:id', authenticateToken, isAdmin, async (req, res) => 
     }
 });
 
-router.get('/desa/by-kecamatan/:kecamatan_id', authenticateToken, async (req, res) => {
+router.get('/desa/by-kecamatan/:kecamatan_id', authenticateToken, validate({ params: paramsKecamatanIdSchema }), async (req, res) => {
     try {
         const { kecamatan_id } = req.params;
         const result = await pool.query(
@@ -148,7 +158,7 @@ router.get('/desa/by-kecamatan/:kecamatan_id', authenticateToken, async (req, re
     }
 });
 
-router.post('/desa', authenticateToken, isVerifier, async (req, res) => {
+router.post('/desa', authenticateToken, isVerifier, validate({ body: desaSchema }), async (req, res) => {
     const { nama_desa_kelurahan, kecamatan_id } = req.body;
     try {
         const result = await pool.query(
@@ -162,7 +172,7 @@ router.post('/desa', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.put('/desa/:id', authenticateToken, isVerifier, async (req, res) => {
+router.put('/desa/:id', authenticateToken, isVerifier, validate({ params: paramsIdSchema, body: desaSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const { nama_desa_kelurahan, kecamatan_id } = req.body;
@@ -182,7 +192,7 @@ router.put('/desa/:id', authenticateToken, isVerifier, async (req, res) => {
     }
 });
 
-router.delete('/desa/:id', authenticateToken, isAdmin, async (req, res) => {
+router.delete('/desa/:id', authenticateToken, isAdmin, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query("DELETE FROM desa_kelurahan WHERE desa_kelurahan_id = $1", [id]);
