@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const pool = require('./db'); 
@@ -13,6 +14,7 @@ const ruteSitus = require('./routes/situs');
 const ruteKerajaan = require('./routes/kerajaan');
 const ruteAlamat = require('./routes/alamat');
 const ruteTokoh = require('./routes/tokoh');
+const ruteArkeolog = require('./routes/arkeolog');
 const ruteObjek = require('./routes/objek_temuan');
 const ruteRelasi = require('./routes/relasi');
 
@@ -21,6 +23,7 @@ app.use('/api/situs', ruteSitus);
 app.use('/api/kerajaan', ruteKerajaan);
 app.use('/api/alamat', ruteAlamat);
 app.use('/api/tokoh', ruteTokoh);
+app.use('/api/arkeolog', ruteArkeolog);
 app.use('/api/objek', ruteObjek);
 app.use('/api/relasi', ruteRelasi);
 
@@ -37,11 +40,6 @@ app.get('/test-db', async(req, res) => {
         res.status(500).json({message: 'Gagal terhubung ke postgreSQL'});
     } 
 });
-
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const saltRounds = 10;
-const JWT_SECRET = 'rehankijing'
 
 app.listen(port, () => {
     console.log(`Server jalan di http://localhost:${port}`)

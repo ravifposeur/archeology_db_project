@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const validate = require('../middleware/validation');
 const { registerSchema, loginSchema } = require('../validators/pengguna.validator');
 const saltRounds = 10;
-const JWT_SECRET = 'rehankijing';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -19,7 +19,7 @@ const loginLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-router.post('/register', validate(registerSchema), async (req, res) => {
+router.post('/register', validate({body: registerSchema}), async (req, res) => {
     try {
         const {nama_pengguna, email, password} = req.body;
 

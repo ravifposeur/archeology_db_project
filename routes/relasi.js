@@ -3,6 +3,14 @@ const router = express.Router();
 const pool = require('../db');
 const { authenticateToken, isVerifier, isAdmin } = require('../middleware/auth');
 
+const validate = require('../middleware/validation');
+const {
+    paramsIdSchema,
+    penelitianSchema,
+    atribusiSchema,
+    gelarSchema
+} = require('../validators/relasi.validator');
+
 router.get('/penelitian/by-situs/:id', authenticateToken, validate({ params: paramsIdSchema }), async (req, res) => {
     try {
         const { id } = req.params;
