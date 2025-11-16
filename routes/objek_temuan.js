@@ -154,7 +154,7 @@ router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
 
         if(error.code == '23503') {
             return res.status(400).json({
-                message: 'Situs ini masih punya tabel yang terhubung'
+                message: 'Objek ini masih punya tabel yang terhubung'
             });
         }
 

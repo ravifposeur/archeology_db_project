@@ -77,7 +77,7 @@ router.delete('/:id', authenticateToken, isAdmin, async (req,res) => {
     } catch (error) {
         console.error('Error saat Delete Tokoh', error);
         if (error.code === '23503') {
-            return res.status(400).json({ message: 'Gagal hapus: Tokoh ini masih dipakai oleh data Situs/Objek.' });
+            return res.status(400).json({ message: 'Gagal hapus: Tokoh ini masih dipakai oleh data Situs.' });
         }
         res.status(500).json({message: 'Error di Server'});
     }
