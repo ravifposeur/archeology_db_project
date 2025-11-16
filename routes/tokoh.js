@@ -45,7 +45,7 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
             `UPDATE tokoh SET nama_tokoh = $1, tahun_lahir = $2,
             tahun_wafat = $3, biografi_singkat = $4, kerajaan_id = $5
             WHERE tokoh_id =  $6 RETURNING *
-            `
+            `,
             [ nama_tokoh, tahun_lahir, tahun_wafat, biografi_singkat, kerajaan_id, id ]
         );
 
@@ -63,21 +63,21 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
 router.delete('/:id', authenticateToken, isAdmin, async (req,res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query("DELETE FROM tokoh WHERE tokoh_id = $1", [id]);
+        const result = await pool.query("DELETE FROM tokoh WHERE tokoh_id = $1 RETURNING *", [id]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({message: 'Situs tidak ditemukan'});
+            return res.status(404).json({message: 'Tokoh tidak ditemukan'});
         }
 
         res.json({
-            message: 'Situs berhasil dihapus',
+            message: 'Tokoh berhasil dihapus',
             data: result.rows[0]
         });
 
     } catch (error) {
-        console.error('Error saat Delete Kerajaan', error);
+        console.error('Error saat Delete Tokoh', error);
         if (error.code === '23503') {
-            return res.status(400).json({ message: 'Gagal hapus: Kerajaan ini masih dipakai oleh data Situs.' });
+            return res.status(400).json({ message: 'Gagal hapus: Tokoh ini masih dipakai oleh data Situs.' });
         }
         res.status(500).json({message: 'Error di Server'});
     }

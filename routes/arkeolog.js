@@ -19,7 +19,7 @@ router.post('/', authenticateToken, isVerifier, async (req, res) => {
         const { nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon } = req.body;
         const result = await pool.query(
             `INSERT INTO arkeolog (nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon) 
-             VALUES ($1, $2, $3, $4, $5) RETURNING *`
+             VALUES ($1, $2, $3, $4, $5) RETURNING *`,
             [nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon]
         );
         res.status(201).json({message: 'Arkeolog berhasil ditambahkan', data: result.rows[0]});
@@ -41,7 +41,38 @@ router.put('/:id', authenticateToken, isVerifier, async (req, res) => {
         if (result.rows.length === 0) return res.status(404).json({ message: 'Arkeolog tidak ditemukan' });
         res.json({ message: 'Arkeolog berhasil diupdate', data: result.rows[0] });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error server.' });
+        console.error('Error saat Edit Arkeolog', error);
+        res.status(500).json({message: 'Error di Server'});
     }
 });
+
+router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        const result = await pool.query(
+            "DELETE FROM arkeolog WHERE arkeolog_id = $1 RETURNING *",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({message: 'Arkeolog tidak ditemukan'});
+        }
+
+        res.json({
+            message: 'Arkeolog berhasil dihapus',
+            data: result.rows[0]
+        });
+    } catch (error) {
+        console.error('Error saat Delete Arkeolog', error);
+        
+        if (error.code === '23503') {
+            return res.status(400).json({ message: 'Gagal hapus: Arkeolog ini masih dipakai oleh data Situs.' });
+        }
+
+        res.status(500).json({message: 'Error di Server'});
+    }
+});
+
+
+module.exports = router;

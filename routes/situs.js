@@ -162,12 +162,12 @@ router.put('/reject/:id', authenticateToken, isVerifier, async (req, res) => {
         );
         
         if (result.rows.length === 0){
-            return res.status(404).json({message: 'Objek tidak ditemukan!'});
+            return res.status(404).json({message: 'Situs tidak ditemukan!'});
         }
 
-        res.json({message: 'Objek berhasil direject', data: result.rows[0]});
+        res.json({message: 'Situs berhasil direject', data: result.rows[0]});
     } catch (error) {
-        console.error('Error reject objek', error);
+        console.error('Error reject Situs', error);
         res.status(500).json({message: 'Error di server'});
     }
 });

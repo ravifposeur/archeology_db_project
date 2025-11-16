@@ -81,7 +81,7 @@ router.delete('/:id', authenticateToken, isAdmin, async (req, res) => {
         }
 
         res.json({
-            message: 'Situs berhasil dihapus',
+            message: 'Kerajaan berhasil dihapus',
             data: result.rows[0]
         });
     } catch (error) {
