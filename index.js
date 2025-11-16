@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const pool = require('./db'); 
@@ -39,11 +40,6 @@ app.get('/test-db', async(req, res) => {
         res.status(500).json({message: 'Gagal terhubung ke postgreSQL'});
     } 
 });
-
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const saltRounds = 10;
-const JWT_SECRET = 'rehankijing'
 
 app.listen(port, () => {
     console.log(`Server jalan di http://localhost:${port}`)

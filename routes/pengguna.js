@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const validate = require('../middleware/validation');
 const { registerSchema, loginSchema } = require('../validators/pengguna.validator');
 const saltRounds = 10;
-const JWT_SECRET = 'rehankijing';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,

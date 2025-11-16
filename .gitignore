@@ -1,0 +1,9 @@
+# Abaikan folder dependensi
+node_modules
+
+# Abaikan file Environment Variables (SANGAT RAHASIA)
+.env
+
+# Abaikan file log
+*.log
+npm-debug.log*
