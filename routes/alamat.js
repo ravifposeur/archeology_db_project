@@ -51,7 +51,12 @@ router.put('/kota/:id', authenticateToken, isVerifier, async (req, res) => {
 router.delete('/kota/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        await pool.query("DELETE FROM kota_kabupaten WHERE kota_kabupaten_id = $1", [id]);
+        const result = await pool.query("DELETE FROM kota_kabupaten WHERE kota_kabupaten_id = $1", [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Kota/Kabupaten tidak ditemukan' });
+        }
+
         res.json({ message: "Kota/Kabupaten berhasil dihapus" });
     } catch (error) {
         if (error.code === '23503') {
@@ -113,7 +118,12 @@ router.put('/kecamatan/:id', authenticateToken, isVerifier, async (req, res) => 
 router.delete('/kecamatan/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        await pool.query("DELETE FROM kecamatan WHERE kecamatan_id = $1", [id]);
+        const result = await pool.query("DELETE FROM kecamatan WHERE kecamatan_id = $1", [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Kecamatan tidak ditemukan' });
+        }
+
         res.json({ message: "Kecamatan berhasil dihapus" });
     } catch (error) {
         if (error.code === '23503') {
@@ -175,7 +185,12 @@ router.put('/desa/:id', authenticateToken, isVerifier, async (req, res) => {
 router.delete('/desa/:id', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        await pool.query("DELETE FROM desa_kelurahan WHERE desa_kelurahan_id = $1", [id]);
+        const result = await pool.query("DELETE FROM desa_kelurahan WHERE desa_kelurahan_id = $1", [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Desa/Kelurahan tidak ditemukan' });
+        }
+
         res.json({ message: "Desa/Kelurahan berhasil dihapus" });
     } catch (error) {
         if (error.code === '23503') {
