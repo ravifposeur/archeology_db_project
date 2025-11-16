@@ -135,7 +135,7 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res, next)
         );
 
         if (updateSitus.rows.length === 0){
-            return res.status(404).json({ message : 'SItus tak ditemukan'});
+            return res.status(404).json({ message : 'Situs tak ditemukan'});
         }
 
         res.json({
@@ -145,6 +145,30 @@ router.put('/approve/:id', authenticateToken, isVerifier, async (req, res, next)
 
     } catch (error) {
         console.error('Error saat verifikasi situs:', error);
+        res.status(500).json({message: 'Terjadi error di server!'});
+    }
+});
+
+router.put('/reject/:id', authenticateToken, isVerifier, async (req, res, next) => {
+    try {
+        
+        const {id} = req.params;
+        const updateSitus = await pool.query(
+            `UPDATE situs_arkeologi SET status_verifikasi = 'rejected' WHERE situs_id = $1 RETURNING *`,
+            [id]
+        );
+
+        if (updateSitus.rows.length === 0){
+            return res.status(404).json({ message : 'Situs tak ditemukan'});
+        }
+
+        res.json({
+            message: 'Situs berhasil direject!',
+            data: updateSitus.rows[0]
+        });
+
+    } catch (error) {
+        console.error('Error saat reject situs:', error);
         res.status(500).json({message: 'Terjadi error di server!'});
     }
 });
