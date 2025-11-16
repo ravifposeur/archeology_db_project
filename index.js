@@ -12,6 +12,7 @@ const ruteKerajaan = require('./routes/kerajaan');
 const ruteAlamat = require('./routes/alamat');
 const ruteTokoh = require('./routes/tokoh');
 const ruteObjek = require('./routes/objek_temuan');
+const ruteRelasi = require('./routes/relasi');
 
 app.use('/api/auth', rutePengguna); 
 app.use('/api/situs', ruteSitus);
@@ -19,6 +20,7 @@ app.use('/api/kerajaan', ruteKerajaan);
 app.use('/api/alamat', ruteAlamat);
 app.use('/api/tokoh', ruteTokoh);
 app.use('/api/objek', ruteObjek);
+app.use('/api/relasi', ruteRelasi);
 
 app.get('/', (req, res) => {
     res.send('PostgreSQL is working!');
