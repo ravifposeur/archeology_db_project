@@ -66,18 +66,18 @@ router.delete('/:id', authenticateToken, isAdmin, async (req,res) => {
         const result = await pool.query("DELETE FROM tokoh WHERE tokoh_id = $1", [id]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({message: 'Tokoh tidak ditemukan'});
+            return res.status(404).json({message: 'Situs tidak ditemukan'});
         }
 
         res.json({
-            message: 'Tokoh berhasil dihapus',
+            message: 'Situs berhasil dihapus',
             data: result.rows[0]
         });
 
     } catch (error) {
-        console.error('Error saat Delete Tokoh', error);
+        console.error('Error saat Delete Kerajaan', error);
         if (error.code === '23503') {
-            return res.status(400).json({ message: 'Gagal hapus: Tokoh ini masih dipakai oleh data Situs/Objek.' });
+            return res.status(400).json({ message: 'Gagal hapus: Kerajaan ini masih dipakai oleh data Situs.' });
         }
         res.status(500).json({message: 'Error di Server'});
     }
