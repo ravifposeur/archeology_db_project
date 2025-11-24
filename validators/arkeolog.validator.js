@@ -15,15 +15,13 @@ const arkeologSchema = Joi.object({
         'any.required': 'Spesialisasi wajib diisi'
     }),
 
-    email: Joi.string().email().required().messages({
+    email: Joi.string().email().messages({
         'string.email': 'Format email tidak valid',
-        'any.required': 'Email wajib diisi'
     }),
 
-    nomor_telepon: Joi.string().min(10).max(15).required().messages({
+    nomor_telepon: Joi.string().min(10).max(15).messages({
         'string.min': 'Nomor Telepon terlalu pendek (minimal 10)',
         'string.max': 'Nomor Telepon terlalu panjang (maksimal 15)',
-        'any.required': 'Nomor Telepon wajib diisi'
     })
 });
 
