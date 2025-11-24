@@ -34,9 +34,13 @@ router.get('/:id', authenticateToken, validate({ params: paramsIdSchema }), asyn
     }
 });
 
-router.post('/', authenticateToken, isVerifier, validate({ body: kerajaanSchema }), async (req, res) => {
+router.post('/', authenticateToken, validate({ body: kerajaanSchema }), async (req, res) => {
     try {
         const { nama_kerajaan, tahun_berdiri, tahun_runtuh, pusat_pemerintahan, deskripsi_singkat } = req.body;
+        
+        const initialStatus = (isVerifier || authenticateToken) 
+            ? 'verified' 
+            : 'pending';
         
         const result = await pool.query(
             `

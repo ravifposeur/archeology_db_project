@@ -42,9 +42,13 @@ router.get('/:id',authenticateToken, validate({ params: paramsIdSchema }), async
     }
 });
 
-router.post('/', authenticateToken, isVerifier, validate({ body: tokohSchema }), async (req, res) => {
+router.post('/', authenticateToken, validate({ body: tokohSchema }), async (req, res) => {
     try {
         const { nama_tokoh, tahun_lahir, tahun_wafat, biografi_singkat, kerajaan_id } = req.body;
+        const initialStatus = (isVerifier || authenticateToken) 
+            ? 'verified' 
+            : 'pending';
+        
         const result = await pool.query(
             `INSERT INTO tokoh (nama_tokoh, tahun_lahir, tahun_wafat, biografi_singkat, kerajaan_id) 
              VALUES ($1, $2, $3, $4, $5) RETURNING *`,

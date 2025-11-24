@@ -30,9 +30,13 @@ router.get('/:id', authenticateToken, validate({ params: paramsIdSchema }), asyn
     }    
 });
 
-router.post('/', authenticateToken, isVerifier, validate({ body: arkeologSchema }), async (req, res) => {
+router.post('/', authenticateToken, validate({ body: arkeologSchema }), async (req, res) => {
     try {
         const { nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon } = req.body;
+        const initialStatus = (isVerifier || authenticateToken) 
+            ? 'verified' 
+            : 'pending';
+        
         const result = await pool.query(
             `INSERT INTO arkeolog (nama_lengkap, afiliasi_institusi, spesialisasi, email, nomor_telepon) 
              VALUES ($1, $2, $3, $4, $5) RETURNING *`,

@@ -36,6 +36,10 @@ router.post('/', authenticateToken, validate({ body: createObjekSchema }), async
             nama_objek, jenis_objek, bahan, panjang, tinggi, lebar,
             teks_transliterasi, aksara, bahasa, situs_id
         } = req.body;
+        
+        const initialStatus = (isVerifier || authenticateToken) 
+            ? 'verified' 
+            : 'pending';
 
         const penggunaPelaporID = req.user.id;
 
